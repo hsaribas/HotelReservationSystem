@@ -1,11 +1,11 @@
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Hotel {
 
     private String name;
-
-    private List<Room> rooms= new ArrayList<>();
+    private List<Room> rooms = new ArrayList<>();
 
     public Hotel(String name) {
         this.name = name;
@@ -16,13 +16,32 @@ public class Hotel {
         this.rooms.add(room);
     }
 
-    public boolean checkRoomAvailability(int roomNumber) {
-        for(Room room : rooms) {
-            if(room.getRoomNumber() == roomNumber && room.isAvailable()) {
-                return true;
+    public boolean checkRoomAvailability(int roomNumber, LocalDate desiredCheckInDate) {
+        Room room = getRoomByRoomNumber(roomNumber);
+        if (room != null) {
+            if (!room.isAvailable()) {
+                return false;
+            }
+            /*for (Reservation reservation : room.getReservationList()) {
+                if (desiredCheckInDate.isAfter(reservation.getCheckInDate())
+                        && (desiredCheckInDate.isBefore(reservation.getCheckOutDate())
+                        || desiredCheckInDate.isEqual(reservation.getCheckOutDate()))) {
+                    return false;
+                }
+            }*/
+            return true;
+        }
+        System.out.println("Room doesn't exist.");
+        return false;
+    }
+
+    public Room getRoomByRoomNumber(int roomNumber) {
+        for(Room room : this.getRooms()) {
+            if(room.getRoomNumber() == roomNumber) {
+                return room;
             }
         }
-        return false;
+        return null;
     }
 
     public String getName() {

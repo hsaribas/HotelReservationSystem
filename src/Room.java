@@ -1,10 +1,11 @@
+import java.util.List;
+
 public class Room {
 
     private int roomNumber;
-
     private RoomType type;
-
     private boolean isAvailable;
+    private List<Reservation> reservationList;
 
     public Room(int roomNumber, RoomType type, boolean isAvailable) {
         this.roomNumber = roomNumber;
@@ -34,5 +35,13 @@ public class Room {
 
     public void setAvailable(boolean available) {
         isAvailable = available;
+    }
+
+    public List<Reservation> getReservationList() {
+        return reservationList;
+    }
+
+    public void setReservationList(Reservation reservation) {
+        this.reservationList.add(reservation);
     }
 }
