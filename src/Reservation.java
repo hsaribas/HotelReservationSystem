@@ -22,7 +22,7 @@ public class Reservation {
         allRooms();
         System.out.println();
 
-        System.out.println(">> Before picking a room we need some information.");
+        System.out.println(">> Before picking a room we need some information. <<");
         System.out.println();
 
         System.out.print("- Enter your name: ");
@@ -36,38 +36,41 @@ public class Reservation {
         guest.setPhoneNumber(enterPhoneNumber());
         guest.setEmail(enterEmailAddress());
 
+        hotel.setGuestList(guest);
+
         selectRoom();
 
         getDesiredCheckInDate();
         getDesiredCheckOutDate();
 
         presentDateOptions(getDesiredCheckInDate(), getDesiredCheckOutDate());
+
         reservingRoom(selectRoom(), getDesiredCheckInDate(), getDesiredCheckOutDate());
     }
 
     public void allRooms() {
         hotel = new Hotel("SKY Hotel Resort");
-        hotel.addRoom(1100, RoomType.SINGLE, true);
-        hotel.addRoom(1101, RoomType.DOUBLE, true);
-        hotel.addRoom(1102, RoomType.SINGLE, true);
-        hotel.addRoom(1103, RoomType.DOUBLE, true);
-        hotel.addRoom(1104, RoomType.SINGLE, true);
-        hotel.addRoom(1105, RoomType.DOUBLE, true);
-        hotel.addRoom(1106, RoomType.SINGLE, true);
-        hotel.addRoom(1107, RoomType.SUITE, true);
-        hotel.addRoom(1108, RoomType.DOUBLE, true);
-        hotel.addRoom(1109, RoomType.SINGLE, true);
-        hotel.addRoom(1110, RoomType.DOUBLE, true);
-        hotel.addRoom(1111, RoomType.SUITE, true);
-        hotel.addRoom(1112, RoomType.DOUBLE, true);
-        hotel.addRoom(1113, RoomType.SINGLE, true);
+        hotel.addRoom(1100, RoomType.SINGLE);
+        hotel.addRoom(1101, RoomType.DOUBLE);
+        hotel.addRoom(1102, RoomType.SINGLE);
+        hotel.addRoom(1103, RoomType.DOUBLE);
+        hotel.addRoom(1104, RoomType.SINGLE);
+        hotel.addRoom(1105, RoomType.DOUBLE);
+        hotel.addRoom(1106, RoomType.SINGLE);
+        hotel.addRoom(1107, RoomType.SUITE);
+        hotel.addRoom(1108, RoomType.DOUBLE);
+        hotel.addRoom(1109, RoomType.SINGLE);
+        hotel.addRoom(1110, RoomType.DOUBLE);
+        hotel.addRoom(1111, RoomType.SUITE);
+        hotel.addRoom(1112, RoomType.DOUBLE);
+        hotel.addRoom(1113, RoomType.SINGLE);
 
         System.out.println("* * * Welcome to " + hotel.getName() + " * * *");
         System.out.println();
 
-        System.out.println(">> Here are the rooms in our hotel");
+        System.out.println(">> Here are the rooms in our hotel. <<");
         System.out.println("-----------------------------------");
-        for (Room r : hotel.getRooms()) {
+        for (Room r : hotel.getRoomList()) {
             System.out.println("- Number: " + r.getRoomNumber());
             System.out.println("- Type: " + r.getType());
             System.out.println("- Availability: " + r.isAvailable());
@@ -89,7 +92,7 @@ public class Reservation {
             System.out.println("* Room " + roomNumber + " is reserved to Mr&Mrs" + guest.getName() + " from " +
                     formattedCheckInDateTime + " to " + formattedCheckOutDateTime + " *");
 
-            for (Room r : hotel.getRooms()) {
+            for (Room r : hotel.getRoomList()) {
                 if (Objects.equals(r.getRoomNumber(), roomNumber)) {
                     r.setAvailable(false);
                 }
@@ -112,11 +115,10 @@ public class Reservation {
                     digitsOnly.substring(7, 9),
                     digitsOnly.substring(9)
             );
-        } else {
-            System.out.println("Invalid phone number! Try again.");
-            System.out.println();
-            return enterPhoneNumber();
         }
+        System.out.println("Invalid phone number! Try again.");
+        System.out.println();
+        return enterPhoneNumber();
     }
 
     public String enterEmailAddress() {
@@ -125,11 +127,10 @@ public class Reservation {
 
         if (isValidEmailAddress(email)) {
             return email.toLowerCase();
-        } else {
-            System.out.println("Invalid email address! Try again.");
-            System.out.println();
-            return enterEmailAddress();
         }
+        System.out.println("Invalid email address! Try again.");
+        System.out.println();
+        return enterEmailAddress();
     }
 
     public boolean isValidEmailAddress(String email) {
@@ -142,8 +143,8 @@ public class Reservation {
         System.out.print("- Enter the number of the room you chose: ");
         int roomNumber = scan.nextInt();
 
-        for (Room room : hotel.getRooms()) {
-            if(room.getRoomNumber() == roomNumber) {
+        for (Room room : hotel.getRoomList()) {
+            if (room.getRoomNumber() == roomNumber) {
                 this.room = room;
             }
         }
@@ -152,47 +153,44 @@ public class Reservation {
     }
 
     public LocalDate getDesiredCheckInDate() {
-        while (true) {
-            System.out.print("- Enter the desired check-in date (dd-MM-yyyy): ");
-            String inputDate = scan.nextLine();
+        System.out.print("- Enter the desired check-in date (dd-MM-yyyy): ");
+        String inputDate = scan.nextLine();
 
-            try {
-                return LocalDate.parse(inputDate, formatter2);
-            } catch (DateTimeParseException e) {
-                System.out.println("Invalid date format. Please enter the date in the format dd-MM-yyyy.");
-            }
+        try {
+            return LocalDate.parse(inputDate, formatter2);
+        } catch (DateTimeParseException e) {
+            System.out.println("Invalid date format! Please enter the date in the format dd-MM-yyyy.");
+            return getDesiredCheckInDate();
         }
     }
 
     public LocalDate getDesiredCheckOutDate() {
-        while (true) {
-            System.out.print("- Enter the desired check-out date (dd-MM-yyyy): ");
-            String inputDate = scan.nextLine();
+        System.out.print("- Enter the desired check-out date (dd-MM-yyyy): ");
+        String inputDate = scan.nextLine();
 
-            try {
-                return LocalDate.parse(inputDate, formatter2);
-            } catch (DateTimeParseException e) {
-                System.out.println("Invalid date format. Please enter the date in the format dd-MM-yyyy.");
-            }
+        try {
+            return LocalDate.parse(inputDate, formatter2);
+        } catch (DateTimeParseException e) {
+            System.out.println("Invalid date format! Please enter the date in the format dd-MM-yyyy.");
+            return getDesiredCheckOutDate();
         }
     }
 
     public List<LocalDate> generateAvailableDates(LocalDate startDate, LocalDate endDate) {
         List<LocalDate> availableDates = new ArrayList<>();
-        LocalDate currentDate = startDate;
 
-        while (!currentDate.isAfter(endDate)) {
-            if (hotel.checkRoomAvailability(room.getRoomNumber(), currentDate, endDate)) {
-                availableDates.add(currentDate);
+        while (!startDate.isAfter(endDate)) {
+            if (hotel.checkRoomAvailability(selectRoom(), startDate, endDate)) {
+                availableDates.add(startDate);
             }
-            currentDate = currentDate.plusDays(1);
+            startDate = startDate.plusDays(1);
         }
 
         return availableDates;
     }
 
-    public void presentDateOptions(LocalDate desiredCheckIn, LocalDate desiredCheckOut) {
-        List<LocalDate> availableDates = generateAvailableDates(desiredCheckIn, desiredCheckOut);
+    public void presentDateOptions(LocalDate desiredCheckInDate, LocalDate desiredCheckOutDate) {
+        List<LocalDate> availableDates = generateAvailableDates(desiredCheckInDate, desiredCheckOutDate);
 
         System.out.println("Available Check-in Dates:");
         for (int i = 0; i < availableDates.size(); i++) {
