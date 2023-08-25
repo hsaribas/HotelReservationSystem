@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.List;
 
 public class Room {
@@ -5,12 +6,13 @@ public class Room {
     private int roomNumber;
     private RoomType type;
     private boolean isAvailable;
-    private List<Reservation> reservationList;
+    private final List<Reservation> reservationList;
 
     public Room(int roomNumber, RoomType type, boolean isAvailable) {
         this.roomNumber = roomNumber;
         this.type = type;
         this.isAvailable = isAvailable;
+        this.reservationList = new ArrayList<>();
     }
 
     public int getRoomNumber() {
@@ -41,7 +43,7 @@ public class Room {
         return reservationList;
     }
 
-    public void setReservationList(Reservation reservation) {
+    public void addReservationToList(Reservation reservation) {
         this.reservationList.add(reservation);
     }
 }

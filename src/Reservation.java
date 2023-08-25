@@ -1,6 +1,9 @@
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Scanner;
 
@@ -11,7 +14,8 @@ public class Reservation {
     private Room room;
     private LocalDateTime checkInDate;
     private LocalDateTime checkOutDate;
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+    private final DateTimeFormatter formatter1 = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+    private final DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("dd-MM-yyyy");
     private final Scanner scan = new Scanner(System.in);
 
     public void welcome() {
@@ -32,14 +36,13 @@ public class Reservation {
         guest.setPhoneNumber(enterPhoneNumber());
         guest.setEmail(enterEmailAddress());
 
-        System.out.print("- Enter the number of the room you chose: ");
-        int roomNumber = scan.nextInt();
+        selectRoom();
 
-        System.out.print("- How many days you want to stay? ");
-        int durationOfStay = scan.nextInt();
-        System.out.println();
+        getDesiredCheckInDate();
+        getDesiredCheckOutDate();
 
-        reservingRoom(roomNumber, durationOfStay, LocalDate.now());
+        presentDateOptions(getDesiredCheckInDate(), getDesiredCheckOutDate());
+        reservingRoom(selectRoom(), getDesiredCheckInDate(), getDesiredCheckOutDate());
     }
 
     public void allRooms() {
@@ -72,25 +75,27 @@ public class Reservation {
         }
     }
 
-    public void reservingRoom(int roomNumber, int durationOfStay, LocalDate desiredCheckInDate) {
-        if (hotel.checkRoomAvailability(roomNumber, desiredCheckInDate)) {
-            LocalDateTime checkInDate = desiredCheckInDate.atStartOfDay();
-            LocalDateTime checkOutDate = checkInDate.plusDays(durationOfStay);
+    public void reservingRoom(int roomNumber, LocalDate desiredCheckInDate, LocalDate desiredCheckOutDate) {
+        if (hotel.checkRoomAvailability(roomNumber, desiredCheckInDate, desiredCheckOutDate)) {
+            LocalDateTime checkInDateTime = desiredCheckInDate.atStartOfDay();
+            LocalDateTime checkOutDateTime = desiredCheckOutDate.atTime(23, 59, 59);
 
-            String formattedCheckInDateTime = checkInDate.format(formatter);
-            String formattedCheckOutDateTime = checkOutDate.format(formatter);
+            String formattedCheckInDateTime = checkInDateTime.format(formatter1);
+            String formattedCheckOutDateTime = checkOutDateTime.format(formatter1);
 
-            this.setCheckInDate(LocalDateTime.parse(formattedCheckInDateTime));
-            this.setCheckOutDate(LocalDateTime.parse(formattedCheckOutDateTime));
+            this.setCheckInDate(checkInDateTime);
+            this.setCheckOutDate(checkOutDateTime);
 
-            System.out.println("* Room " + roomNumber + " is reserved to Mr&Mrs" + guest.getName() + " on " +
-                    formattedCheckInDateTime + " until " + formattedCheckOutDateTime + " *");
+            System.out.println("* Room " + roomNumber + " is reserved to Mr&Mrs" + guest.getName() + " from " +
+                    formattedCheckInDateTime + " to " + formattedCheckOutDateTime + " *");
 
             for (Room r : hotel.getRooms()) {
                 if (Objects.equals(r.getRoomNumber(), roomNumber)) {
                     r.setAvailable(false);
                 }
             }
+        } else {
+            System.out.println("> The room is not available for the specified dates.");
         }
     }
 
@@ -129,7 +134,70 @@ public class Reservation {
 
     public boolean isValidEmailAddress(String email) {
         String regex = "^[A-Za-z0-9+_.-]+@([A-Za-z0-9-]+\\.)+[A-Za-z]{2,4}$";
+
         return email.matches(regex);
+    }
+
+    public int selectRoom() {
+        System.out.print("- Enter the number of the room you chose: ");
+        int roomNumber = scan.nextInt();
+
+        for (Room room : hotel.getRooms()) {
+            if(room.getRoomNumber() == roomNumber) {
+                this.room = room;
+            }
+        }
+
+        return roomNumber;
+    }
+
+    public LocalDate getDesiredCheckInDate() {
+        while (true) {
+            System.out.print("- Enter the desired check-in date (dd-MM-yyyy): ");
+            String inputDate = scan.nextLine();
+
+            try {
+                return LocalDate.parse(inputDate, formatter2);
+            } catch (DateTimeParseException e) {
+                System.out.println("Invalid date format. Please enter the date in the format dd-MM-yyyy.");
+            }
+        }
+    }
+
+    public LocalDate getDesiredCheckOutDate() {
+        while (true) {
+            System.out.print("- Enter the desired check-out date (dd-MM-yyyy): ");
+            String inputDate = scan.nextLine();
+
+            try {
+                return LocalDate.parse(inputDate, formatter2);
+            } catch (DateTimeParseException e) {
+                System.out.println("Invalid date format. Please enter the date in the format dd-MM-yyyy.");
+            }
+        }
+    }
+
+    public List<LocalDate> generateAvailableDates(LocalDate startDate, LocalDate endDate) {
+        List<LocalDate> availableDates = new ArrayList<>();
+        LocalDate currentDate = startDate;
+
+        while (!currentDate.isAfter(endDate)) {
+            if (hotel.checkRoomAvailability(room.getRoomNumber(), currentDate, endDate)) {
+                availableDates.add(currentDate);
+            }
+            currentDate = currentDate.plusDays(1);
+        }
+
+        return availableDates;
+    }
+
+    public void presentDateOptions(LocalDate desiredCheckIn, LocalDate desiredCheckOut) {
+        List<LocalDate> availableDates = generateAvailableDates(desiredCheckIn, desiredCheckOut);
+
+        System.out.println("Available Check-in Dates:");
+        for (int i = 0; i < availableDates.size(); i++) {
+            System.out.println((i + 1) + ". " + availableDates.get(i));
+        }
     }
 
     public Guest getGuest() {
