@@ -29,8 +29,8 @@ public class Hotel {
                 LocalDateTime reservationCheckInDateTime = reservation.getCheckInDate();
                 LocalDateTime reservationCheckOutDateTime = reservation.getCheckOutDate();
 
-                LocalDateTime desiredCheckInDateTime = desiredCheckInDate.atStartOfDay();
-                LocalDateTime desiredCheckOutDateTime = desiredCheckOutDate.atTime(23, 59, 59); // End of the day
+                LocalDateTime desiredCheckInDateTime = desiredCheckInDate.atTime(12, 0);
+                LocalDateTime desiredCheckOutDateTime = desiredCheckOutDate.atTime(12, 0);
 
                 boolean overlap = !desiredCheckOutDateTime.isBefore(reservationCheckInDateTime)
                         && !desiredCheckInDateTime.isAfter(reservationCheckOutDateTime);
@@ -39,7 +39,6 @@ public class Hotel {
                     return false;
                 }
             }
-
             return true;
         }
 
@@ -53,7 +52,6 @@ public class Hotel {
                 return room;
             }
         }
-
         return null;
     }
 
