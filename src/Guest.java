@@ -4,6 +4,15 @@ public class Guest {
     private String phoneNumber;
     private String email;
 
+    public void guestInfo() {
+        System.out.println("-----------------------------------");
+        System.out.println(">> Guest Information: ");
+        System.out.println("- Name: " + this.getName());
+        System.out.println("- Phone Number: " + this.getPhoneNumber());
+        System.out.println("- Email: " + this.getEmail());
+        System.out.println("-----------------------------------");
+    }
+
     public String getName() {
         return name;
     }

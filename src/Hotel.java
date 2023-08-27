@@ -42,7 +42,7 @@ public class Hotel {
             return true;
         }
 
-        System.out.println("Room doesn't exist.");
+        System.out.println("- Room doesn't exist. -");
         return false;
     }
 

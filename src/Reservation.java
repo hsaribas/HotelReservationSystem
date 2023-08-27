@@ -4,7 +4,6 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Scanner;
 
 public class Reservation {
@@ -17,6 +16,7 @@ public class Reservation {
     private final DateTimeFormatter formatter1 = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
     private final DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("dd-MM-yyyy");
     private final Scanner scan = new Scanner(System.in);
+    private boolean running = true;
 
     public void welcome() {
         System.out.println("* * * Welcome to " + hotel.getName() + " * * *");
@@ -25,6 +25,10 @@ public class Reservation {
         System.out.println(">> Before picking a room we need some information. <<");
         System.out.println();
 
+        main();
+    }
+
+    public void main() {
         System.out.print("- Enter your name: ");
         String name = scan.nextLine().toUpperCase();
 
@@ -37,7 +41,7 @@ public class Reservation {
 
         hotel.setGuestList(guest);
 
-        while (true) {
+        while (running) {
             System.out.println();
             allRooms();
 
@@ -50,21 +54,7 @@ public class Reservation {
             presentDateOptions(selectedRoomNumber, checkInDate, checkOutDate);
 
             System.out.println();
-            System.out.print("Do you want to continue or check out a new room?\n" +
-                             "To continue (press '1'), to check a new room (press '2'): ");
-            String decision = scan.nextLine();
-            if (decision.equals("1")) {
-                System.out.println();
-                reservingRoom(selectedRoomNumber, checkInDate, checkOutDate);
-
-                System.out.println();
-                selectExtraRoom();
-                break;
-            } else if (decision.equals("2")) {
-            } else {
-                System.out.println();
-                System.out.println("Invalid input! Please enter '1' or '2'.");
-            }
+            nextMove(selectedRoomNumber, checkInDate, checkOutDate);
         }
     }
 
@@ -105,17 +95,18 @@ public class Reservation {
             this.setCheckInDate(checkInDateTime);
             this.setCheckOutDate(checkOutDateTime);
 
-            System.out.println("* Room " + roomNumber + " is reserved.\n" +
-                    "* Mr&Mrs " + guest.getName() + "\n" +
-                    "* From " + formattedCheckInDateTime + " to " + formattedCheckOutDateTime);
+            System.out.println("-----------------------------------");
+            System.out.println("* Room " + roomNumber + " is successfully reserved for new guest.\n" +
+                               "* From " + formattedCheckInDateTime + " to " + formattedCheckOutDateTime);
+            guest.guestInfo();
 
-            for (Room r : hotel.getRoomList()) {
-                if (Objects.equals(r.getRoomNumber(), roomNumber)) {
-                    r.setAvailable(false);
+            for (Room room : hotel.getRoomList()) {
+                if (room.getRoomNumber() == roomNumber) {
+                    room.setAvailable(false);
                 }
             }
         } else {
-            System.out.println("> The room is not available for the specified dates.");
+            System.out.println(">> The room is not available for the specified dates.");
         }
     }
 
@@ -182,6 +173,7 @@ public class Reservation {
             return LocalDate.parse(inputDate, formatter2);
         } catch (DateTimeParseException e) {
             System.out.println("Invalid date format! Please enter the date in the format dd-MM-yyyy.");
+
             return getDesiredCheckInDate();
         }
     }
@@ -194,6 +186,7 @@ public class Reservation {
             return LocalDate.parse(inputDate, formatter2);
         } catch (DateTimeParseException e) {
             System.out.println("Invalid date format! Please enter the date in the format dd-MM-yyyy.");
+
             return getDesiredCheckOutDate();
         }
     }
@@ -214,23 +207,46 @@ public class Reservation {
     public void presentDateOptions(int roomNumber, LocalDate desiredCheckInDate, LocalDate desiredCheckOutDate) {
         List<LocalDate> availableDates = generateAvailableDates(roomNumber, desiredCheckInDate, desiredCheckOutDate);
 
-        System.out.println("Available Check-in Dates:");
+        System.out.println(">> The days when the room is available in the date range you specify: ");
         for (int i = 0; i < availableDates.size(); i++) {
-            System.out.println((i + 1) + ". " + availableDates.get(i));
+            System.out.println("- " + (i + 1) + ". " + availableDates.get(i));
+        }
+    }
+
+    public void nextMove(int selectedRoomNumber, LocalDate checkInDate, LocalDate checkOutDate) {
+        System.out.print("Do you want to continue to reserving room or do you want check out a new room?\n" +
+                         "To continue (press '1'), to check a new room (press '2'): ");
+        String decision = scan.nextLine();
+
+        if (decision.equals("1")) {
+            System.out.println();
+            reservingRoom(selectedRoomNumber, checkInDate, checkOutDate);
+
+            System.out.println();
+            selectExtraRoom();
+        } else if (decision.equals("2")) {
+            System.out.println();
+        } else {
+            System.out.println();
+            System.out.println("Invalid input! Try again.");
+
+            System.out.println();
+            nextMove(selectedRoomNumber, checkInDate, checkOutDate);
         }
     }
 
     public void selectExtraRoom() {
         System.out.print("If you want to select extra room (press '1'), to quit (press '2'): ");
-        String pick = scan.next();
+        String pick = scan.nextLine();
 
         if (pick.equals("1")) {
             System.out.println();
-            welcome();
+            main();
         } else if (pick.equals("2")) {
-            System.out.println("* * * Have a nice holiday! * * *");
+            System.out.println("* * * Have a nice vacation! * * *");
         } else {
             System.out.println("Invalid input! Try again.");
+            System.out.println();
             selectExtraRoom();
         }
     }
