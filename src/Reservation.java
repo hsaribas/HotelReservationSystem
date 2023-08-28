@@ -16,7 +16,7 @@ public class Reservation {
     private final DateTimeFormatter formatter1 = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
     private final DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("dd-MM-yyyy");
     private final Scanner scan = new Scanner(System.in);
-    private boolean running = true;
+    private boolean flag = true;
 
     public void welcome() {
         System.out.println("* * * Welcome to " + hotel.getName() + " * * *");
@@ -41,7 +41,7 @@ public class Reservation {
 
         hotel.setGuestList(guest);
 
-        while (running) {
+        while (flag) {
             System.out.println();
             allRooms();
 
@@ -59,28 +59,30 @@ public class Reservation {
     }
 
     public void allRooms() {
-        hotel.addRoom(1100, RoomType.SINGLE);
-        hotel.addRoom(1101, RoomType.DOUBLE);
-        hotel.addRoom(1102, RoomType.SINGLE);
-        hotel.addRoom(1103, RoomType.DOUBLE);
-        hotel.addRoom(1104, RoomType.SINGLE);
-        hotel.addRoom(1105, RoomType.DOUBLE);
-        hotel.addRoom(1106, RoomType.SINGLE);
-        hotel.addRoom(1107, RoomType.SUITE);
-        hotel.addRoom(1108, RoomType.DOUBLE);
-        hotel.addRoom(1109, RoomType.SINGLE);
-        hotel.addRoom(1110, RoomType.DOUBLE);
-        hotel.addRoom(1111, RoomType.SUITE);
-        hotel.addRoom(1112, RoomType.DOUBLE);
-        hotel.addRoom(1113, RoomType.SINGLE);
+        hotel.addRoom(1100, RoomType.SINGLE, true);
+        hotel.addRoom(1101, RoomType.DOUBLE, true);
+        hotel.addRoom(1102, RoomType.SINGLE, true);
+        hotel.addRoom(1103, RoomType.DOUBLE, true);
+        hotel.addRoom(1104, RoomType.SINGLE, true);
+        hotel.addRoom(1105, RoomType.DOUBLE, true);
+        hotel.addRoom(1106, RoomType.SINGLE, true);
+        hotel.addRoom(1107, RoomType.SUITE, true);
+        hotel.addRoom(1108, RoomType.DOUBLE, true);
+        hotel.addRoom(1109, RoomType.SINGLE, true);
+        hotel.addRoom(1110, RoomType.DOUBLE, true);
+        hotel.addRoom(1111, RoomType.SUITE, true);
+        hotel.addRoom(1112, RoomType.DOUBLE, true);
+        hotel.addRoom(1113, RoomType.SINGLE, true);
 
-        System.out.println(">> Here are the rooms in our hotel. <<");
+        System.out.println(">> Available rooms in our hotel <<");
         System.out.println("-----------------------------------");
         for (Room r : hotel.getRoomList()) {
-            System.out.println("- Number: " + r.getRoomNumber());
-            System.out.println("- Type: " + r.getType());
-            System.out.println("- Availability: " + r.isAvailable());
-            System.out.println("-----------------------------------");
+            if(r.isAvailable()) {
+                System.out.println("- Number: " + r.getRoomNumber());
+                System.out.println("- Type: " + r.getType());
+                System.out.println("- Availability: " + r.isAvailable());
+                System.out.println("-----------------------------------");
+            }
         }
     }
 
@@ -97,14 +99,10 @@ public class Reservation {
 
             System.out.println("-----------------------------------");
             System.out.println("* Room " + roomNumber + " is successfully reserved for new guest.\n" +
-                               "* From " + formattedCheckInDateTime + " to " + formattedCheckOutDateTime);
+                               "* From " + formattedCheckInDateTime + " to " + formattedCheckOutDateTime + ".");
             guest.guestInfo();
 
-            for (Room room : hotel.getRoomList()) {
-                if (room.getRoomNumber() == roomNumber) {
-                    room.setAvailable(false);
-                }
-            }
+            hotel.updateRoomAvailability(roomNumber, false);
         } else {
             System.out.println(">> The room is not available for the specified dates.");
         }
@@ -152,13 +150,26 @@ public class Reservation {
     }
 
     public int selectRoom() {
-        System.out.print("- Enter the number of the room you chose: ");
-        int roomNumber = scan.nextInt();
-        scan.nextLine();
+        int roomNumber;
 
-        for (Room room : hotel.getRoomList()) {
-            if (room.getRoomNumber() == roomNumber) {
-                this.room = room;
+        while (true) {
+            System.out.print("- Enter the number of the room you choose: ");
+            roomNumber = scan.nextInt();
+            scan.nextLine();
+
+            boolean isValidRoomNumber = false;
+            for (Room room : hotel.getRoomList()) {
+                if (room.getRoomNumber() == roomNumber) {
+                    isValidRoomNumber = true;
+                    this.room = room;
+                    break;
+                }
+            }
+
+            if (isValidRoomNumber) {
+                break;
+            } else {
+                System.out.println("Invalid room number! Please enter a valid room number.");
             }
         }
 
@@ -214,7 +225,7 @@ public class Reservation {
     }
 
     public void nextMove(int selectedRoomNumber, LocalDate checkInDate, LocalDate checkOutDate) {
-        System.out.print("Do you want to continue to reserving room or do you want check out a new room?\n" +
+        System.out.print("Do you want to continue to reserving a room or do you want to check a new room?\n" +
                          "To continue (press '1'), to check a new room (press '2'): ");
         String decision = scan.nextLine();
 
@@ -236,7 +247,7 @@ public class Reservation {
     }
 
     public void selectExtraRoom() {
-        System.out.print("If you want to select extra room (press '1'), to quit (press '2'): ");
+        System.out.print("If you want to select an extra room (press '1'), to quit (press '2'): ");
         String pick = scan.nextLine();
 
         if (pick.equals("1")) {

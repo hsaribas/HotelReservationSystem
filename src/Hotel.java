@@ -13,8 +13,8 @@ public class Hotel {
         this.name = name;
     }
 
-    public void addRoom(int roomNumber, RoomType type) {
-        Room room = new Room(roomNumber, type, true);
+    public void addRoom(int roomNumber, RoomType type, boolean isAvailable) {
+        Room room = new Room(roomNumber, type, isAvailable);
         this.roomList.add(room);
     }
 
@@ -53,6 +53,15 @@ public class Hotel {
             }
         }
         return null;
+    }
+
+    public void updateRoomAvailability(int roomNumber, boolean isAvailable) {
+        for (Room room : roomList) {
+            if (room.getRoomNumber() == roomNumber) {
+                room.setAvailable(isAvailable);
+                break;
+            }
+        }
     }
 
     public void getGuestsInfo() {
