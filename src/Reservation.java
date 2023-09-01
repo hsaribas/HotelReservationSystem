@@ -8,8 +8,8 @@ import java.util.Scanner;
 
 public class Reservation {
 
-    private final Hotel hotel = new Hotel("SKY Hotel Resort");
-    private Guest guest = new Guest();
+    private Hotel hotel;
+    private Guest guest;
     private Room room;
     private LocalDateTime checkInDate;
     private LocalDateTime checkOutDate;
@@ -19,10 +19,11 @@ public class Reservation {
     private boolean flag = true;
 
     public void welcome() {
+        hotel = new Hotel("SKY Hotel Resort");
         System.out.println("* * * Welcome to " + hotel.getName() + " * * *");
         System.out.println();
 
-        System.out.println(">> Before picking a room we need some information. <<");
+        System.out.println(">> Before picking a room we need some information: <<");
         System.out.println();
 
         main();
@@ -35,6 +36,7 @@ public class Reservation {
         String phoneNumber = enterPhoneNumber();
         String emailAddress = enterEmailAddress();
 
+        guest = new Guest();
         guest.setName(name);
         guest.setPhoneNumber(phoneNumber);
         guest.setEmail(emailAddress);
@@ -43,7 +45,7 @@ public class Reservation {
 
         while (flag) {
             System.out.println();
-            allRooms();
+            hotel.allRooms();
 
             System.out.println();
             int selectedRoomNumber = selectRoom();
@@ -55,34 +57,6 @@ public class Reservation {
 
             System.out.println();
             nextMove(selectedRoomNumber, checkInDate, checkOutDate);
-        }
-    }
-
-    public void allRooms() {
-        hotel.addRoom(1100, RoomType.SINGLE, true);
-        hotel.addRoom(1101, RoomType.DOUBLE, true);
-        hotel.addRoom(1102, RoomType.SINGLE, true);
-        hotel.addRoom(1103, RoomType.DOUBLE, true);
-        hotel.addRoom(1104, RoomType.SINGLE, true);
-        hotel.addRoom(1105, RoomType.DOUBLE, true);
-        hotel.addRoom(1106, RoomType.SINGLE, true);
-        hotel.addRoom(1107, RoomType.SUITE, true);
-        hotel.addRoom(1108, RoomType.DOUBLE, true);
-        hotel.addRoom(1109, RoomType.SINGLE, true);
-        hotel.addRoom(1110, RoomType.DOUBLE, true);
-        hotel.addRoom(1111, RoomType.SUITE, true);
-        hotel.addRoom(1112, RoomType.DOUBLE, true);
-        hotel.addRoom(1113, RoomType.SINGLE, true);
-
-        System.out.println(">> Available rooms in our hotel <<");
-        System.out.println("-----------------------------------");
-        for (Room r : hotel.getRoomList()) {
-            if(r.isAvailable()) {
-                System.out.println("- Number: " + r.getRoomNumber());
-                System.out.println("- Type: " + r.getType());
-                System.out.println("- Availability: " + r.isAvailable());
-                System.out.println("-----------------------------------");
-            }
         }
     }
 
@@ -254,7 +228,9 @@ public class Reservation {
             System.out.println();
             main();
         } else if (pick.equals("2")) {
+            System.out.println();
             System.out.println("* * * Have a nice vacation! * * *");
+            flag = false;
         } else {
             System.out.println("Invalid input! Try again.");
             System.out.println();
