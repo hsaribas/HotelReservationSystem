@@ -6,7 +6,7 @@ public class Guest {
 
     public void guestInfo() {
         System.out.println("-----------------------------------");
-        System.out.println(">> Guest Information: ");
+        System.out.println("<< Guest Information: >>");
         System.out.println("- Name: " + this.getName());
         System.out.println("- Phone Number: " + this.getPhoneNumber());
         System.out.println("- Email: " + this.getEmail());

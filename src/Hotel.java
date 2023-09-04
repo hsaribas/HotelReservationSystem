@@ -35,8 +35,9 @@ public class Hotel {
 
         System.out.println(">> Available rooms in our hotel: <<");
         System.out.println("-----------------------------------");
+
         for (Room room : this.roomList) {
-            if(room.isAvailable()) {
+            if (room.isAvailable()) {
                 System.out.println("- Number: " + room.getRoomNumber());
                 System.out.println("- Type: " + room.getType());
                 System.out.println("- Availability: " + room.isAvailable());
@@ -94,6 +95,7 @@ public class Hotel {
     public void getGuestsInfo() {
         System.out.println("<< Information of guests currently staying at the hotel: >>");
         System.out.println("-----------------------------------");
+
         for (Guest guest : this.getGuestList()) {
             System.out.println("- Name: " + guest.getName());
             System.out.println("- Phone Number: " + guest.getPhoneNumber());

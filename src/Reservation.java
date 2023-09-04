@@ -73,10 +73,11 @@ public class Reservation {
 
             System.out.println("-----------------------------------");
             System.out.println("* Room " + roomNumber + " is successfully reserved for new guest.\n" +
-                               "* From " + formattedCheckInDateTime + " to " + formattedCheckOutDateTime + ".");
+                    "* From " + formattedCheckInDateTime + " to " + formattedCheckOutDateTime + ".");
             guest.guestInfo();
 
             hotel.updateRoomAvailability(roomNumber, false);
+
         } else {
             System.out.println(">> The room is not available for the specified dates.");
         }
@@ -200,7 +201,7 @@ public class Reservation {
 
     public void nextMove(int selectedRoomNumber, LocalDate checkInDate, LocalDate checkOutDate) {
         System.out.print("Do you want to continue to reserving a room or do you want to check a new room?\n" +
-                         "To continue (press '1'), to check a new room (press '2'): ");
+                "To continue (press '1'), to check a new room (press '2'): ");
         String decision = scan.nextLine();
 
         if (decision.equals("1")) {
@@ -209,8 +210,10 @@ public class Reservation {
 
             System.out.println();
             selectExtraRoom();
+
         } else if (decision.equals("2")) {
             System.out.println();
+
         } else {
             System.out.println();
             System.out.println("Invalid input! Try again.");
@@ -227,10 +230,12 @@ public class Reservation {
         if (pick.equals("1")) {
             System.out.println();
             main();
+
         } else if (pick.equals("2")) {
             System.out.println();
             System.out.println("* * * Have a nice vacation! * * *");
             flag = false;
+
         } else {
             System.out.println("Invalid input! Try again.");
             System.out.println();
