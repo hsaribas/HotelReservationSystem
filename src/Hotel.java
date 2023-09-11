@@ -33,7 +33,7 @@ public class Hotel {
         addRoom(1112, RoomType.DOUBLE, true);
         addRoom(1113, RoomType.SINGLE, true);
 
-        System.out.println(">> Available rooms in our hotel: <<");
+        System.out.println("<< Available rooms in our hotel: >>");
         System.out.println("-----------------------------------");
 
         for (Room room : this.roomList) {

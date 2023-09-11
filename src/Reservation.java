@@ -23,7 +23,7 @@ public class Reservation {
         System.out.println("* * * Welcome to " + hotel.getName() + " * * *");
         System.out.println();
 
-        System.out.println(">> Before picking a room we need some information: <<");
+        System.out.println("> Before picking a room we need some information: ");
         System.out.println();
 
         main();
@@ -79,7 +79,7 @@ public class Reservation {
             hotel.updateRoomAvailability(roomNumber, false);
 
         } else {
-            System.out.println(">> The room is not available for the specified dates.");
+            System.out.println("> The room is not available for the specified dates.");
         }
     }
 
@@ -99,7 +99,7 @@ public class Reservation {
                 );
             }
 
-            System.out.println("Invalid phone number! Try again.");
+            System.out.println("> Invalid phone number! Try again.");
             System.out.println();
         }
     }
@@ -113,14 +113,13 @@ public class Reservation {
                 return email.toLowerCase();
             }
 
-            System.out.println("Invalid email address! Try again.");
+            System.out.println("> Invalid email address! Try again.");
             System.out.println();
         }
     }
 
     public boolean isValidEmailAddress(String email) {
         String regex = "^[A-Za-z0-9+_.-]+@([A-Za-z0-9-]+\\.)+[A-Za-z]{2,4}$";
-
         return email.matches(regex);
     }
 
@@ -144,7 +143,7 @@ public class Reservation {
             if (isValidRoomNumber) {
                 break;
             } else {
-                System.out.println("Invalid room number! Please enter a valid room number.");
+                System.out.println("> Invalid room number! Please enter a valid room number.");
             }
         }
 
@@ -158,8 +157,7 @@ public class Reservation {
         try {
             return LocalDate.parse(inputDate, formatter2);
         } catch (DateTimeParseException e) {
-            System.out.println("Invalid date format! Please enter the date in the format dd-MM-yyyy.");
-
+            System.out.println("> Invalid date format! Please enter the date in the format dd-MM-yyyy.");
             return getDesiredCheckInDate();
         }
     }
@@ -171,8 +169,7 @@ public class Reservation {
         try {
             return LocalDate.parse(inputDate, formatter2);
         } catch (DateTimeParseException e) {
-            System.out.println("Invalid date format! Please enter the date in the format dd-MM-yyyy.");
-
+            System.out.println("> Invalid date format! Please enter the date in the format dd-MM-yyyy.");
             return getDesiredCheckOutDate();
         }
     }
@@ -193,51 +190,45 @@ public class Reservation {
     public void presentDateOptions(int roomNumber, LocalDate desiredCheckInDate, LocalDate desiredCheckOutDate) {
         List<LocalDate> availableDates = generateAvailableDates(roomNumber, desiredCheckInDate, desiredCheckOutDate);
 
-        System.out.println(">> The days when the room is available in the date range you specify: ");
+        System.out.println("<< The days when the room is available in the date range you specify: >>");
         for (int i = 0; i < availableDates.size(); i++) {
             System.out.println("- " + (i + 1) + ". " + availableDates.get(i));
         }
     }
 
     public void nextMove(int selectedRoomNumber, LocalDate checkInDate, LocalDate checkOutDate) {
-        System.out.print("Do you want to continue to reserving a room or do you want to check a new room?\n" +
-                "To continue (press '1'), to check a new room (press '2'): ");
+        System.out.print("> Do you want to continue to reserving a room or do you want to check a new room?\n" +
+                         "To continue (press '1'), to check a new room (press '2'): ");
         String decision = scan.nextLine();
 
         if (decision.equals("1")) {
             System.out.println();
             reservingRoom(selectedRoomNumber, checkInDate, checkOutDate);
-
             System.out.println();
             selectExtraRoom();
-
         } else if (decision.equals("2")) {
             System.out.println();
-
         } else {
             System.out.println();
-            System.out.println("Invalid input! Try again.");
-
+            System.out.println("> Invalid input! Try again.");
             System.out.println();
             nextMove(selectedRoomNumber, checkInDate, checkOutDate);
         }
     }
 
     public void selectExtraRoom() {
-        System.out.print("If you want to select an extra room (press '1'), to quit (press '2'): ");
+        System.out.print("> If you want to select an extra room (press '1'), to quit (press '2'): ");
         String pick = scan.nextLine();
 
         if (pick.equals("1")) {
             System.out.println();
             main();
-
         } else if (pick.equals("2")) {
             System.out.println();
             System.out.println("* * * Have a nice vacation! * * *");
             flag = false;
-
         } else {
-            System.out.println("Invalid input! Try again.");
+            System.out.println("> Invalid input! Try again.");
             System.out.println();
             selectExtraRoom();
         }
