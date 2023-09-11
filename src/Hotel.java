@@ -53,6 +53,7 @@ public class Hotel {
             if (!room.isAvailable()) {
                 return false;
             }
+
             for (Reservation reservation : room.getReservationList()) {
                 LocalDateTime reservationCheckInDateTime = reservation.getCheckInDate();
                 LocalDateTime reservationCheckOutDateTime = reservation.getCheckOutDate();
@@ -67,6 +68,7 @@ public class Hotel {
                     return false;
                 }
             }
+
             return true;
         }
 
@@ -80,6 +82,7 @@ public class Hotel {
                 return room;
             }
         }
+
         return null;
     }
 
