@@ -198,7 +198,7 @@ public class Reservation {
 
     public void nextMove(int selectedRoomNumber, LocalDate checkInDate, LocalDate checkOutDate) {
         System.out.print("> Do you want to continue to reserving a room or do you want to check a new room?\n" +
-                         "To continue (press '1'), to check a new room (press '2'): ");
+                "To continue (press '1'), to check a new room (press '2'): ");
         String decision = scan.nextLine();
 
         if (decision.equals("1")) {
